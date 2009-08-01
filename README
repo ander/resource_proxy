@@ -1,13 +1,21 @@
 ResourceProxy
 =============
+[a Rails plugin]
 
-Introduction goes here.
+ResourceProxy introduces a level of indirection when accessing a model in 
+a controller.
 
 
 Example
 =======
 
-Example goes here.
+In controller:
+@car = Car.find_proxy(params, [:session, :ar], {:store => session})
+
+will try to find first via SessionProxy, then via ActiveRecordProxy
+passing :store option for former and no options for latter.
+
+Returned proxy should act somewhat like the model it proxies.
 
 
-Copyright (c) 2009 [name of plugin creator], released under the MIT license
+Copyright (c) 2009 Antti Hakala, released under the MIT license
