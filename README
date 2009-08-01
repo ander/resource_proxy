@@ -19,7 +19,7 @@ Returned proxy should act somewhat like the model it proxies.
 
 
 Subresources can be defined this way:
-@tire = Car.new_proxy(params, [:session, :ar], {:store => session, 
+@tire = Tire.new_proxy(params, [:session, :ar], {:store => session, 
                                                 :belongs_to => :car})
 
 new_proxy is the same as find_proxy but may feel more natural
