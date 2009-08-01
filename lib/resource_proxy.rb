@@ -26,5 +26,8 @@ module ResourceProxy
       
       raise "No proxy found for class #{self} with params #{params.inspect}"
     end
+
+    alias_method :new_proxy, :find_proxy
+    
   end
 end

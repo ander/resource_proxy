@@ -18,4 +18,11 @@ passing :store option for former and no options for latter.
 Returned proxy should act somewhat like the model it proxies.
 
 
+Subresources can be defined this way:
+@tire = Car.new_proxy(params, [:session, :ar], {:store => session, 
+                                                :belongs_to => :car})
+
+new_proxy is the same as find_proxy but may feel more natural
+where you would normally use Model.new
+
 Copyright (c) 2009 Antti Hakala, released under the MIT license
