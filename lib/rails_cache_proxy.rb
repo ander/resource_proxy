@@ -2,6 +2,10 @@
 
 Same as SessionProxy, but uses "Rails.cache" for storage.
 
+Also, accepts :key_prefix option e.g. if you don't want
+different users' data to collide. :key_prefix needs to be the
+same on subresources and their parent.
+
 =end
 
 class RailsCacheProxy < CrudResourceProxy
@@ -22,6 +26,7 @@ class RailsCacheProxy < CrudResourceProxy
   def initialize(klass, opts={})
     @klass = klass
     @belongs_to = opts[:belongs_to]
+    @key_prefix = opts[:key_prefix]
   end
 
   private
@@ -45,12 +50,11 @@ class RailsCacheProxy < CrudResourceProxy
   # storing is the only thing that really works for subresources
   def store_data(atts)
     if @belongs_to
-      parent = @belongs_to.to_s
-      data = (Rails.cache.read(parent) || {}).dup
+      data = (Rails.cache.read(parent_key) || {}).dup
       data[:subs] ||= {}
       data[:subs][key] ||= []
       data[:subs][key] << atts
-      Rails.cache.write(parent, data)
+      Rails.cache.write(parent_key, data)
     else
       data = Rails.cache.read(key) || {}
       Rails.cache.write(key, data.merge(atts))
@@ -60,12 +64,17 @@ class RailsCacheProxy < CrudResourceProxy
   def clear_data
     Rails.cache.delete(key)
   end
+
+  def parent_key
+    return nil unless is_subresource?
+    "#{@key_prefix}#{@belongs_to}"
+  end
   
   def key
     if @belongs_to
       @klass.to_s.pluralize.underscore
     else
-      @klass.to_s.underscore
+      "#{@key_prefix}#{@klass.to_s.underscore}"
     end
   end
   
