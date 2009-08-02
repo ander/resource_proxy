@@ -19,24 +19,21 @@ module ResourceProxy
     alias_method :attributes=, :update_attributes
   
     def save
-      if is_subresource?
-        store_data(atts)
-      else
-        resource = build_resource
-        result = resource.save
-        clear_data if result
-        result
-      end
+      return self if is_subresource?
+
+      resource = build_resource
+      result = resource.save
+      clear_data if result
+      result
     end
   
     def save!
-      if is_subresource?
-        store_data(atts)
-      else
-        resource = build_resource
-        resource.save!
-        clear_data
-      end
+      return self if is_subresource?
+
+      resource = build_resource
+      result = resource.save!
+      clear_data
+      result
     end
   
     def destroy
